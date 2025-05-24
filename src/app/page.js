@@ -53,7 +53,7 @@ export default function Home() {
       <div className="max-w-4xl mx-auto p-6">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-            Richest Revealer
+            Millionaire’s Dilemma : Yacht Edition 🚤
           </h1>
           <div>
             {isConnected ? (
@@ -105,7 +105,7 @@ export default function Home() {
               <p>🔐 Submit your wealth anonymously. </p>
               <p>🥇 Compete without revealing a thing.</p>
               <p> 🧠 Powered by @Inco.</p>
-             <p> 🚀 Let the chain decide who’s the richest — not the loudest.</p>
+              <p> 🚀 Let the chain decide who’s the richest — not the loudest.</p>
               <span onClick={handleConnect} className="text-blue-300 cursor-pointer underline "> Join the revolution!</span>
             </div>
 

@@ -22,12 +22,7 @@ export default function useRichestRevealer() {
   const [canRequestDecryption, setCanRequestDecryption] = useState(false);
 
   const [participantStatuses, setParticipantStatuses] = useState([]);
-
-  const knownParticipants = [
-    { address: '0x67cF92a103594a660aB92b361B2f417b17E1cc33', name: 'Alice' },
-    { address: '0x9e2D69a98cAE31CA607A4d98ABc9971F7e4599D4', name: 'Bob' },
-    { address: '0x14Fd0190e78460912f74c968B237b7cFA6817E4b', name: 'Eve' },
-  ];
+  const [knownParticipants, setKnownParticipants] = useState([]);
 
   const contractConfig = {
     address: RICHEST_REVEALER_CONTRACT_ADDRESS,
@@ -42,6 +37,7 @@ export default function useRichestRevealer() {
   };
 
   const fetchParticipantStatuses = async () => {
+
     try {
       const statuses = await Promise.all(
         knownParticipants.map(async ({ address }) => {
@@ -56,39 +52,24 @@ export default function useRichestRevealer() {
       setParticipantStatuses(statuses);
     } catch (err) {
       console.error('Failed to fetch participant statuses', err);
-    }
+    } 
   };
 
   const fetchContractState = async () => {
     try {
-      const [
-        _owner,
-        _count,
-        _computed,
-        _canDecrypt,
-        _hasSubmitted,
-      ] = await Promise.all([
+      const [_owner, _count, _computed, _canDecrypt] = await Promise.all([
         readContract(publicClient, { ...contractConfig, functionName: 'owner' }),
         readContract(publicClient, { ...contractConfig, functionName: 'getParticipantCount' }),
         readContract(publicClient, { ...contractConfig, functionName: 'resultComputed' }),
         readContract(publicClient, { ...contractConfig, functionName: 'canRequestDecryption' }),
-        address
-          ? readContract(publicClient, {
-            ...contractConfig,
-            functionName: 'hasParticipantSubmitted',
-            args: [address],
-          })
-          : false,
       ]);
 
       setOwner(_owner);
       setParticipantCount(Number(_count));
       setResultComputed(_computed);
       setCanRequestDecryption(_canDecrypt);
-      setHasSubmitted(_hasSubmitted);
 
-      await fetchParticipantStatuses();
-
+      await fetchKnownParticipants();
     } catch (err) {
       console.error('Error fetching state:', err);
     }
@@ -96,10 +77,7 @@ export default function useRichestRevealer() {
 
   const fetchWinner = async () => {
     try {
-      const [
-        winner,
-        revealed,
-      ] = await Promise.all([
+      const [winner, revealed] = await Promise.all([
         readContract(publicClient, {
           ...contractConfig,
           functionName: 'getRichestParticipants',
@@ -118,31 +96,75 @@ export default function useRichestRevealer() {
       toast.loading('Calling contract to fetch winner...', {
         duration: 3000,
         position: 'top-center',
+      });
+    }
+  };
+
+  const fetchKnownParticipants = async () => {
+    try {
+      const count = await readContract(publicClient, {
+        ...contractConfig,
+        functionName: 'getParticipantCount',
+      });
+
+      if (count > 0) {
+        const hasSubmitted = await readContract(publicClient, {
+          ...contractConfig,
+          functionName: 'hasParticipantSubmitted',
+          args: [address],
+        });
+        setHasSubmitted(hasSubmitted);
       }
-      )
-    }
-  }
 
-  // do polling for 5 seconds if resultRevealed is true
-  useEffect(() => {
-    if (!canRequestDecryption && richest.length == 0 && participantCount == 3 && resultComputed) {
-      const interval = setInterval(() => {
-        fetchWinner();
-      }, 5000);
+      const participants = await Promise.all(
+        Array.from({ length: Number(count) }).map((_, i) =>
+          readContract(publicClient, {
+            ...contractConfig,
+            functionName: 'getParticipant',
+            args: [i],
+          })
+        )
+      );
 
-      return () => clearInterval(interval);
+      const names = ['Alice', 'Bob', 'Eve'];
+      const namedParticipants = participants.map((address, idx) => ({
+        address,
+        name: names[idx] || `Participant ${idx + 1}`,
+      }));
+
+      setKnownParticipants(namedParticipants);
+    } catch (err) {
+      console.error('Failed to fetch known participants:', err);
     }
-  }, [canRequestDecryption,richest.length,participantCount]);
+  };
 
   useEffect(() => {
     if (address) fetchContractState();
   }, [address]);
+
+  // 🧠 Trigger fetchParticipantStatuses once knownParticipants is populated
+  useEffect(() => {
+    if (knownParticipants.length > 0) {
+      fetchParticipantStatuses();
+    }
+  }, [knownParticipants]);
+
+  // Poll winner every 5s when result is computed but not yet revealed
+  useEffect(() => {
+    if (!canRequestDecryption && richest.length === 0 && participantCount === 3 && resultComputed) {
+      const interval = setInterval(() => {
+        fetchWinner();
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [canRequestDecryption, richest.length, participantCount, resultComputed]);
 
   const handleWealthSubmit = async () => {
     if (!input) {
       toast.error('Please enter a value to submit.');
       return;
     }
+
     const promise = new Promise(async (resolve, reject) => {
       try {
         const encryptedWealth = await encryptValue({
@@ -231,5 +253,7 @@ export default function useRichestRevealer() {
     canRequestDecryption,
     knownParticipants,
     participantStatuses,
+    // statusLoading,
+    // statusError,
   };
 }

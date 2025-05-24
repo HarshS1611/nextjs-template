@@ -26,6 +26,7 @@ export default function ContractInteraction() {
     knownParticipants,
     participantStatuses,
   } = useRichestRevealer();
+  console.log('Richest:', knownParticipants);
 
   const renderStatusBadge = (condition) => (
     <span className={`ml-2 text-xs font-semibold px-2 py-1 rounded-full ${condition ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
@@ -35,11 +36,11 @@ export default function ContractInteraction() {
 
   return (
     <div className="min-h-screen bg-gray-900 bg-opacity-40 rounded-2xl text-gray-100 px-6 py-10">
-      <h1 className="text-4xl font-bold text-center mb-10">🏆 Richest Revealer</h1>
+      <h1 className="text-4xl font-bold text-center mb-10">🏆 Encrypted Richest Revealer</h1>
       <div className="bg-gray-800 border col-span-2 border-gray-700 text-black rounded-xl shadow-sm p-6 mb-6 space-y-4">
         <h2 className="text-xl font-semibold text-white">Participants</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {knownParticipants.map((p) => {
+          {knownParticipants?.length > 0 ? knownParticipants.map((p) => {
             const status = participantStatuses.find(s => s.address.toLowerCase() === p.address.toLowerCase());
             const isSubmitted = status?.submitted;
             const isWinner = richest.includes(p.address);
@@ -51,7 +52,7 @@ export default function ContractInteraction() {
         p-5 rounded-lg shadow-md border 
         transition-colors duration-300 ease-in-out
         cursor-default
-        ${isWinner ? 'bg-green-50 border-green-400 hover:bg-green-100' :
+        ${isWinner ? 'bg-green-100 border-green-400 hover:bg-green-100' :
                     isSubmitted ? 'bg-yellow-50 border-yellow-400 hover:bg-yellow-100' :
                       'bg-white border-gray-300 hover:bg-gray-50'}
       `}
@@ -74,7 +75,8 @@ export default function ContractInteraction() {
                 </p>
               </article>
             );
-          })}
+          })
+            : <p className="text-gray-500">No participants yet.</p>}
 
         </div>
       </div>
