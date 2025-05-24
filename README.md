@@ -1,4 +1,49 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# RichestRevealer Frontend
+
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app), enhanced with integrations to a privacy-preserving Ethereum smart contract called **RichestRevealer**.
+
+The frontend interacts with the smart contract to submit encrypted wealth values, compute the richest participant securely, and reveal results with privacy protections powered by the [Inco Lightning SDK](https://docs.inco.org/js-sdk).
+
+---
+
+![image](https://github.com/user-attachments/assets/14b982c2-f887-4b55-b326-48f4f4e1e2d8)
+
+
+## Features
+
+- **Encrypted Wealth Submission**: Participants submit encrypted wealth values using Inco Lightning SDK, ensuring privacy.
+- **Smart Contract Interaction**: Connects to the RichestRevealer smart contract on your chosen testnet or local blockchain.
+- **Participant Status Tracking**: Shows real-time submission statuses of known participants.
+- **Winner Highlighting**: Visually highlights the richest participant(s) with dynamic UI feedback.
+- **Owner-Restricted Actions**: Restricts privileged actions like computing richest and requesting decryption to contract owner.
+- **Responsive and Accessible UI**: Clean design using Tailwind CSS for styling, including clear submission and winner status indicators.
+- **Toast Notifications**: Displays toast messages for every tansaction and fetch request.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js >= 16.x
+- npm or yarn or pnpm
+- A wallet like MetaMask configured to your testnet (e.g., Goerli)
+- Access to the deployed **RichestRevealer** contract address and ABI
+- API keys or configuration for Inco Lightning SDK (testnet mode)
+
+### Installation
+
+Clone the repo and install dependencies:
+
+```bash
+git clone <your-repo-url>
+cd richestrevealer-frontend
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
 
 ## Getting Started
 
@@ -19,6 +64,19 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+
+
+### Key Files Explained
+
+- **app/page.tsx**: The main UI entry point displaying participants, submission buttons, and results.
+- **app/components/ContractInteraction.tsx**: Displays each participant’s info with their submission and winner status and other components.
+- **app/hooks/useRichestRevealer.ts**: Custom hook to interface with the RichestRevealer smart contract via `viem` and set toast fetch data and status.
+- **utils/contract.js**: Contains the smart contract address and ABI for easy import.
+
+---
+
+![image](https://github.com/user-attachments/assets/032646da-cc01-4dac-9c43-92a36535d2e1)
+
 
 ## Learn More
 
