@@ -5,8 +5,9 @@ import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useDisconnect } from "wagmi";
 import { useEffect, useState } from "react";
 import { Wallet, LogOut, User } from "lucide-react";
-import EncryptedTokenInterface from "@/components/encrypted-token-ineterface";
-import EncryptedSend from "@/components/encrypted-send";
+import ContractInteraction from "@/components/ContractInteraction";
+import { Toaster } from 'react-hot-toast';
+import Image from "next/image";
 
 export default function Home() {
   const { isConnected, address } = useAccount();
@@ -42,24 +43,23 @@ export default function Home() {
 
   if (!mounted)
     return (
-      <div className="bg-gray-900 min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-white animate-pulse">Loading...</div>
       </div>
     );
 
   return (
-    <div className="bg-gray-900 min-h-screen">
+    <div className="">
       <div className="max-w-4xl mx-auto p-6">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-            <Wallet className="text-blue-400" />
-            Encrypted Tokens
+            Richest Revealer
           </h1>
           <div>
             {isConnected ? (
-              <div className="flex items-center gap-4 bg-gray-800 p-2 rounded-lg border border-gray-700">
+              <div className="flex items-center gap-4 bg-[#4589EE] p-2 rounded-lg border border-blue shadow-xl">
                 <div className="flex items-center gap-2">
-                  <User className="text-blue-400 w-5 h-5" />
+                  <User className="text-white w-5 h-5" />
                   <span className="text-sm text-white truncate max-w-[150px]">
                     {address?.substring(0, 6)}...
                     {address?.substring(address.length - 4)}
@@ -67,7 +67,7 @@ export default function Home() {
                 </div>
                 <button
                   onClick={handleDisconnect}
-                  className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-md transition-colors flex items-center gap-2"
+                  className="bg-red-500 hover:bg-red-700 text-white px-3 py-1.5 rounded-md transition-colors flex items-center gap-2"
                 >
                   <LogOut className="w-4 h-4" />
                   Logout
@@ -86,15 +86,14 @@ export default function Home() {
         </div>
 
         {isConnected ? (
-          <div className="grid md:grid-cols-2 place-items-start gap-6 mt-32">
-            <EncryptedTokenInterface />
-            <EncryptedSend />
+          <div className=" gap-6 mt-20">
+            <ContractInteraction />
           </div>
         ) : (
-          <div className="bg-gray-800 border border-gray-700 rounded-xl p-10 text-center shadow-2xl">
+          <div className="bg-[#4589EE] bg-opacity-20 rounded-xl p-10 text-center">
             <Wallet className="mx-auto mb-4 w-12 h-12 text-blue-400" />
             <p className="text-white text-lg mb-4">
-              Connect your wallet to access encrypted tokens
+              Connect your wallet to access the Richest Revealer contract.
             </p>
             <button
               onClick={handleConnect}
@@ -102,9 +101,26 @@ export default function Home() {
             >
               Connect Wallet
             </button>
+            <div className="flex flex-col gap-2 justify-center py-10 w-full text-gray-100  mt-4">
+              <p>🔐 Submit your wealth anonymously. </p>
+              <p>🥇 Compete without revealing a thing.</p>
+              <p> 🧠 Powered by @Inco.</p>
+             <p> 🚀 Let the chain decide who’s the richest — not the loudest.</p>
+              <span onClick={handleConnect} className="text-blue-300 cursor-pointer underline "> Join the revolution!</span>
+            </div>
+
+            <Image
+              src="/images/ui.png"
+              alt="Hero Image"
+              width={800}
+              height={800}
+              className="mt-8 mx-auto"
+            />
           </div>
         )}
       </div>
+      <Toaster position="bottom-right" />
+
     </div>
   );
 }

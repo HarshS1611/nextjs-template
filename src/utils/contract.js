@@ -1,7 +1,7 @@
-import encyptedERC20ABI from "@/abi/encryptedERC20.json";
+import RichestRevealerABI from "@/abi/richestRevealer.json";
 
-export const ENCRYPTED_ERC20_CONTRACT_ADDRESS =
-  "0x3ddc06411cb3303246a956c8a28b04ab0811d30c"; 
+export const RICHEST_REVEALER_CONTRACT_ADDRESS =
+  "0x3B478B0baA26524df3D19d9528D0f3379Ade9129"; 
 
-export const ENCRYPTEDERC20ABI = encyptedERC20ABI;
+export const RICHEST_REVEALER_ABI = RichestRevealerABI;
 

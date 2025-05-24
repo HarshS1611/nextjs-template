@@ -1,7 +1,6 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import { Web3Provider } from "@/provider/web3-provider";
-import { ChainBalanceProvider } from "@/provider/balance-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -15,8 +14,8 @@ const geistMono = localFont({
 });
 
 export const metadata = {
-  title: "React Startker Kit | inco/js",
-  description: "Starter kit for React with inco/js",
+  title: "Richest Revealer",
+  description: "Reveal the richest participant in a group of wallets without revealing their wealth.",
 };
 
 export default function RootLayout({ children }) {
@@ -26,9 +25,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Web3Provider>
-          <ChainBalanceProvider>
             <div>{children}</div>
-          </ChainBalanceProvider>
         </Web3Provider>
       </body>
     </html>
