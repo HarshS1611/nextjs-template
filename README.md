@@ -4,7 +4,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 The frontend interacts with the smart contract to submit encrypted wealth values, compute the richest participant securely, and reveal results with privacy protections powered by the [Inco Lightning SDK](https://docs.inco.org/js-sdk).
 
-## Porject Links
+## Project Links
 - [Smart Contract Repo 🔗](https://github.com/HarshS1611/richest-revealer-contract)
 - [Smart Contract Walkthrough Video 🔗](https://www.loom.com/share/9aa614f058c94ad0bf696541270a80f6?sid=37953322-3e76-4137-95a5-19f5945426eb)
 - [Walkthrough video smart contract 🔗](https://sepolia.basescan.org/address/0x6adafc3cb7255b2539f01c2387096eb3c69e47ea)
