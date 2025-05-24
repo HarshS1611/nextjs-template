@@ -23,6 +23,8 @@ export default function ContractInteraction() {
     resultRevealed,
     canRequestDecryption,
     isTransactionPending,
+    knownParticipants,
+    participantStatuses,
   } = useRichestRevealer();
 
   const renderStatusBadge = (condition) => (
@@ -34,6 +36,49 @@ export default function ContractInteraction() {
   return (
     <div className="min-h-screen bg-gray-900 bg-opacity-40 rounded-2xl text-gray-100 px-6 py-10">
       <h1 className="text-4xl font-bold text-center mb-10">🏆 Richest Revealer</h1>
+      <div className="bg-gray-800 border col-span-2 border-gray-700 text-black rounded-xl shadow-sm p-6 mb-6 space-y-4">
+        <h2 className="text-xl font-semibold text-white">Participants</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {knownParticipants.map((p) => {
+            const status = participantStatuses.find(s => s.address.toLowerCase() === p.address.toLowerCase());
+            const isSubmitted = status?.submitted;
+            const isWinner = richest.includes(p.address);
+
+            return (
+              <article
+                key={p.address}
+                className={`
+        p-5 rounded-lg shadow-md border 
+        transition-colors duration-300 ease-in-out
+        cursor-default
+        ${isWinner ? 'bg-green-50 border-green-400 hover:bg-green-100' :
+                    isSubmitted ? 'bg-yellow-50 border-yellow-400 hover:bg-yellow-100' :
+                      'bg-white border-gray-300 hover:bg-gray-50'}
+      `}
+                aria-label={`${p.name} participant card${isWinner ? ', winner' : isSubmitted ? ', submitted wealth' : ', not submitted'}`}
+              >
+                <header className="flex items-center justify-between mb-2">
+                  <h3 className="font-bold text-lg text-gray-900">{p.name}</h3>
+                  {isWinner && (
+                    <span role="img" aria-label="Winner trophy" className="text-2xl animate-bounce" title="🏆 Winner">
+                      🏆
+                    </span>
+                  )}
+                </header>
+                <address className="not-italic mb-3 text-xs text-gray-600 break-all">{p.address}</address>
+                <p className="text-sm">
+                  Submitted:{" "}
+                  <span className={isSubmitted ? 'text-green-700 font-semibold' : 'text-red-700 font-semibold'}>
+                    {isSubmitted ? 'Yes' : 'No'}
+                  </span>
+                </p>
+              </article>
+            );
+          })}
+
+        </div>
+      </div>
+
 
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
         {/* Info Card */}

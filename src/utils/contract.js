@@ -1,7 +1,7 @@
 import RichestRevealerABI from "../abi/RichestRevealer.json";
 
 export const RICHEST_REVEALER_CONTRACT_ADDRESS =
-  "0x3B478B0baA26524df3D19d9528D0f3379Ade9129"; 
+  "0xb3C89009d4c01dfddc9BE26816A3169076eE1554"; 
 
 export const RICHEST_REVEALER_ABI = RichestRevealerABI;
 

@@ -21,6 +21,14 @@ export default function useRichestRevealer() {
   const [resultRevealed, setResultRevealed] = useState(false);
   const [canRequestDecryption, setCanRequestDecryption] = useState(false);
 
+  const [participantStatuses, setParticipantStatuses] = useState([]);
+
+  const knownParticipants = [
+    { address: '0x67cF92a103594a660aB92b361B2f417b17E1cc33', name: 'Alice' },
+    { address: '0x9e2D69a98cAE31CA607A4d98ABc9971F7e4599D4', name: 'Bob' },
+    { address: '0x14Fd0190e78460912f74c968B237b7cFA6817E4b', name: 'Eve' },
+  ];
+
   const contractConfig = {
     address: RICHEST_REVEALER_CONTRACT_ADDRESS,
     abi: RICHEST_REVEALER_ABI,
@@ -31,6 +39,24 @@ export default function useRichestRevealer() {
     if (err?.shortMessage) return err.shortMessage;
     if (err?.message) return err.message;
     return 'Transaction failed';
+  };
+
+  const fetchParticipantStatuses = async () => {
+    try {
+      const statuses = await Promise.all(
+        knownParticipants.map(async ({ address }) => {
+          const submitted = await readContract(publicClient, {
+            ...contractConfig,
+            functionName: 'hasParticipantSubmitted',
+            args: [address],
+          });
+          return { address, submitted };
+        })
+      );
+      setParticipantStatuses(statuses);
+    } catch (err) {
+      console.error('Failed to fetch participant statuses', err);
+    }
   };
 
   const fetchContractState = async () => {
@@ -60,6 +86,8 @@ export default function useRichestRevealer() {
       setResultComputed(_computed);
       setCanRequestDecryption(_canDecrypt);
       setHasSubmitted(_hasSubmitted);
+
+      await fetchParticipantStatuses();
 
     } catch (err) {
       console.error('Error fetching state:', err);
@@ -201,5 +229,7 @@ export default function useRichestRevealer() {
     resultComputed,
     resultRevealed,
     canRequestDecryption,
+    knownParticipants,
+    participantStatuses,
   };
 }
